@@ -25,6 +25,7 @@ pipeline {
 
             steps{
                 sh 'ls -la'
+                sh 'aws s3 ls'
                 sh 'terraform init -input=false -backend-config="key=states/terraform.tfstate"'
             }
             

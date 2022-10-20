@@ -63,28 +63,47 @@ pipeline {
                 }
             }
         }
-        
-        stage('Apply') {
-            when {
-                not {
-                    equals expected: true, actual: params.Destroy
+
+        stage('Action'){
+            steps{
+                script{
+                    def test = params.Apply
+                    if(test == true) {
+                        equals expected: true, actual: params.Apply
+
+                        steps {
+                            sh "terraform apply -input=false tfplan"
+                        }
+                    } else{
+                        steps {
+                            sh "terraform destroy --auto-approve"
+                        }
+                    }
                 }
             }
+        }
+        
+    //     stage('Apply') {
+    //         when {
+    //             not {
+    //                 equals expected: true, actual: params.Destroy
+    //             }
+    //         }
             
-            steps {
-                sh "terraform apply -input=false tfplan"
-            }
-        }
+    //         steps {
+    //             sh "terraform apply -input=false tfplan"
+    //         }
+    //     }
         
-        stage('Destroy') {
-            when {
-                equals expected: true, actual: params.Destroy
-            }
+    //     stage('Destroy') {
+    //         when {
+    //             equals expected: true, actual: params.Destroy
+    //         }
         
-        steps {
-           sh "terraform destroy --auto-approve"
-        }
-    }
+    //     steps {
+    //        sh "terraform destroy --auto-approve"
+    //     }
+    // }
 
   }
 }
